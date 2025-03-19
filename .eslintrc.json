@@ -1,0 +1,7 @@
+{
+  "extends": ["next", "prettier"],
+  "plugins": ["tailwindcss"],
+  "rules": {
+    "tailwindcss/classnames-order": "warn"
+  }
+}
