@@ -2,7 +2,7 @@
 
 import useUser from "@/hooks/useUser";
 import { createDiary } from "@/libs/diaryApi";
-import { Diary } from "@/types/diary";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const DiaryForm = () => {
@@ -10,7 +10,9 @@ const DiaryForm = () => {
   const [content, setContent] = useState<string>("");
   const [mood, setMood] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
-  const [time, setTime] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,11 +26,13 @@ const DiaryForm = () => {
         user_id: user.id,
         content,
         mood,
-        weather
+        weather,
+        date
       };
       await createDiary(newDiary);
       setContent("");
       alert("일기가 저장되었습니다.");
+      router.push("/diary");
     } catch (error) {
       console.error("일기 저장 오류 발생", error);
     }
@@ -43,12 +47,28 @@ const DiaryForm = () => {
         onChange={(e) => setContent(e.target.value)}
       ></textarea>
       <div className="mt-2 flex gap-2">
-        <button onClick={() => setMood("😊")} className="rounded-lg border px-4 py-2">
-          😊 Mood
-        </button>
-        <button onClick={() => setWeather("☀️")} className="rounded-lg border px-4 py-2">
-          ☀️ Weather
-        </button>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="rounded border px-4 py-2"
+        />
+        <select value={mood} onChange={(e) => setMood(e.target.value)} className="rounded-lg border px-4 py-2">
+          <option value="">Mood</option>
+          <option value="😄">😄</option>
+          <option value="😭">😭</option>
+          <option value="😡">😡</option>
+          <option value="😪">😪</option>
+          <option value="😱">😱</option>
+        </select>
+        <select value={weather} onChange={(e) => setWeather(e.target.value)} className="rounded-lg border px-4 py-2">
+          <option value="">Weather</option>
+          <option value="☀️">☀️ 맑음</option>
+          <option value="☁️">☁️ 흐림</option>
+          <option value="☔️">☔️ 비</option>
+          <option value="❄️">❄️ 눈</option>
+          <option value="💨">💨 강풍</option>
+        </select>
       </div>
       <button onClick={handleSubmit}>저장하기</button>
     </div>
