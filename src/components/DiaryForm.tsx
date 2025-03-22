@@ -4,6 +4,7 @@ import useUser from "@/hooks/useUser";
 import { createDiary } from "@/libs/diaryApi";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import IconSelector from "./IconSelector";
 
 const DiaryForm = () => {
   const { user } = useUser();
@@ -11,6 +12,21 @@ const DiaryForm = () => {
   const [mood, setMood] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
   const [date, setDate] = useState<string>("");
+
+  const moodOptions = [
+    { label: "happy", src: "/mood/happy.png" },
+    { label: "sad", src: "/mood/sad.png" },
+    { label: "angry", src: "/mood/angry.png" },
+    { label: "tired", src: "/mood/tired.png" }
+  ];
+
+  const weatherOptions = [
+    { label: "sunny", src: "/weather/sunny.png" },
+    { label: "cloudy", src: "/weather/cloud.png" },
+    { label: "rainy", src: "/weather/rain.png" },
+    { label: "snowy", src: "/weather/snow.png" },
+    { label: "windy", src: "/weather/wind.png" }
+  ];
 
   const router = useRouter();
 
@@ -53,22 +69,8 @@ const DiaryForm = () => {
           onChange={(e) => setDate(e.target.value)}
           className="rounded border px-4 py-2"
         />
-        <select value={mood} onChange={(e) => setMood(e.target.value)} className="rounded-lg border px-4 py-2">
-          <option value="">Mood</option>
-          <option value="😄">😄</option>
-          <option value="😭">😭</option>
-          <option value="😡">😡</option>
-          <option value="😪">😪</option>
-          <option value="😱">😱</option>
-        </select>
-        <select value={weather} onChange={(e) => setWeather(e.target.value)} className="rounded-lg border px-4 py-2">
-          <option value="">Weather</option>
-          <option value="☀️">☀️ 맑음</option>
-          <option value="☁️">☁️ 흐림</option>
-          <option value="☔️">☔️ 비</option>
-          <option value="❄️">❄️ 눈</option>
-          <option value="💨">💨 강풍</option>
-        </select>
+        <IconSelector title="mood" value={mood} setValue={setMood} options={moodOptions} />
+        <IconSelector title="weather" value={weather} setValue={setWeather} options={weatherOptions} />
       </div>
       <button onClick={handleSubmit}>저장하기</button>
     </div>
