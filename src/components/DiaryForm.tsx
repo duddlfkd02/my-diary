@@ -1,17 +1,36 @@
 "use client";
 
 import useUser from "@/hooks/useUser";
-import { createDiary } from "@/libs/diaryApi";
+import { createDiary, updateDiary } from "@/libs/diaryApi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IconSelector from "./IconSelector";
+import { Diary } from "@/types/diary";
 
-const DiaryForm = () => {
+interface DiaryFormProps {
+  initialData?: Diary;
+  isEdit?: boolean;
+}
+
+const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
   const { user } = useUser();
+  const router = useRouter();
+  const today = new Date().toISOString().split("T")[0];
+
   const [content, setContent] = useState<string>("");
   const [mood, setMood] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<string>(initialData?.date || today);
+
+  // 수정모드이면 초기값 설정
+  useEffect(() => {
+    if (initialData) {
+      setContent(initialData.content || "");
+      setMood(initialData.mood || "");
+      setWeather(initialData.weather || "");
+      setDate(initialData.date || "");
+    }
+  }, [initialData]);
 
   const moodOptions = [
     { label: "happy", src: "/mood/happy.png" },
@@ -28,8 +47,6 @@ const DiaryForm = () => {
     { label: "windy", src: "/weather/wind.png" }
   ];
 
-  const router = useRouter();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -37,17 +54,22 @@ const DiaryForm = () => {
       return;
     }
 
+    const diaryData = {
+      user_id: user.id,
+      content,
+      mood,
+      weather,
+      ...(date ? { date } : {})
+    };
+
     try {
-      const newDiary = {
-        user_id: user.id,
-        content,
-        mood,
-        weather,
-        date
-      };
-      await createDiary(newDiary);
-      setContent("");
-      alert("일기가 저장되었습니다.");
+      if (isEdit && initialData?.id) {
+        await updateDiary(initialData.id, diaryData);
+        alert("일기가 수정되었습니다.");
+      } else {
+        await createDiary(diaryData);
+        alert("일기가 저장되었습니다.");
+      }
       router.push("/diary");
     } catch (error) {
       console.error("일기 저장 오류 발생", error);
@@ -72,7 +94,7 @@ const DiaryForm = () => {
         <IconSelector title="mood" value={mood} setValue={setMood} options={moodOptions} />
         <IconSelector title="weather" value={weather} setValue={setWeather} options={weatherOptions} />
       </div>
-      <button onClick={handleSubmit}>저장하기</button>
+      <button onClick={handleSubmit}>{isEdit ? "수정하기" : "저장하기"}</button>
     </div>
   );
 };
