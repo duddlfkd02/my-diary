@@ -13,7 +13,7 @@ export const getDiaries = async (userId: string): Promise<Diary[]> => {
     .from("diaries")
     .select("*")
     .eq("user_id", userId)
-    .order("date", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (error) throw new Error(`다이어리 데이터 불러오기 실패하였습니다.. ${error.message}`);
   return data || [];
