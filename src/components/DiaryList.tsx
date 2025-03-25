@@ -1,8 +1,8 @@
 import useUser from "@/hooks/useUser";
-import { deleteDiary, getDiaries } from "@/libs/diaryApi";
+import { getDiaries } from "@/libs/diaryApi";
 import { Diary } from "@/types/diary";
 import { useRouter } from "next/navigation";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const DiaryList = () => {
   const { user } = useUser();
@@ -17,58 +17,18 @@ const DiaryList = () => {
     }
   }, [user]);
 
-  const handleDelete = async (id: string) => {
-    if (!user) return;
-
-    const confirmDelete = confirm("해당 일기를 삭제하시나요?");
-    if (!confirmDelete) return;
-
-    try {
-      await deleteDiary(id);
-      const updated = await getDiaries(user.id);
-      setDiaries(updated);
-      alert("일기가 삭제되었습니다.");
-    } catch (error) {
-      console.error("일기 삭제 실패", error);
-      alert("일기 삭제 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleNextPage = (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    router.push(`/diary/${id}`);
-  };
-
   return (
     <div className="p-4">
       {diaries.length > 0 ? (
         diaries.map((diary) => (
           <div
             key={diary.id}
-            className="mb-2 cursor-pointer rounded-lg border p-4"
-            onClick={(e) => handleNextPage(e, diary.id!)}
+            className="mb-2 cursor-pointer rounded-lg border p-4 hover:bg-gray-50"
+            onClick={() => router.push(`/diary/${diary.id}`)}
           >
-            <p>{diary.content.slice(0, 10)}</p>
-            <div className="mt-2 flex gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/diary/edit/${diary.id}`);
-                }}
-                className="text-sm text-blue-500 underline"
-              >
-                ✏️
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(diary.id!);
-                }}
-                className="text-sm text-red-500 underline"
-              >
-                🗑️
-              </button>
-            </div>
+            <p className="text-sm text-gray-700">
+              {diary.content.length > 50 ? diary.content.slice(0, 50) + "..." : diary.content}
+            </p>
           </div>
         ))
       ) : (
