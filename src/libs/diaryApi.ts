@@ -8,12 +8,18 @@ export const createDiary = async (diary: Omit<Diary, "id" | "date">) => {
   return data;
 };
 
-export const getDiaries = async (userId: string): Promise<Diary[]> => {
-  const { data, error } = await supabase
-    .from("diaries")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
+export const getDiaries = async (
+  userId: string,
+  mood?: string,
+  sort: "newest" | "oldest" = "newest"
+): Promise<Diary[]> => {
+  let query = supabase.from("diaries").select("*").eq("user_id", userId);
+
+  if (mood) {
+    query = query.eq("mood", mood);
+  }
+
+  const { data, error } = await query.order("created_at", { ascending: sort === "oldest" });
 
   if (error) throw new Error(`다이어리 데이터 불러오기 실패하였습니다.. ${error.message}`);
   return data || [];
