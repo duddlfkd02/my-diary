@@ -6,8 +6,11 @@ import { deleteDiary } from "@/libs/diaryApi";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useUser from "@/hooks/useUser";
+import { useToast } from "@/hooks/use-toast";
+import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 
 const DiaryDetailPage = () => {
+  const { toast } = useToast();
   const { user } = useUser();
   const { id } = useParams() as { id: string };
   const router = useRouter();
@@ -34,16 +37,17 @@ const DiaryDetailPage = () => {
   const handleDelete = async () => {
     if (!user || !diary?.id) return;
 
-    const confirmDelete = confirm("정말 삭제하시겠어요?");
-    if (!confirmDelete) return;
-
     try {
       await deleteDiary(diary.id);
-      alert("일기가 삭제되었습니다.");
+      toast({
+        description: "일기가 삭제되었습니다."
+      });
       router.push("/diary");
     } catch (error) {
       console.error("삭제 실패", error);
-      alert("삭제 중 오류가 발생했습니다.");
+      toast({
+        description: "문제가 발생했어요. 다시 시도해주세요."
+      });
     }
   };
 
@@ -67,9 +71,7 @@ const DiaryDetailPage = () => {
         >
           ✏️
         </button>
-        <button onClick={handleDelete} className="text-sm text-red-500 underline">
-          🗑️
-        </button>
+        <DeleteConfirmDialog onConfirm={handleDelete} />
       </div>
     </div>
   );

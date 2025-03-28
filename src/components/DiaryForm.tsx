@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import IconSelector from "./IconSelector";
 import { Diary } from "@/types/diary";
+import { useToast } from "@/hooks/use-toast";
 
 interface DiaryFormProps {
   initialData?: Diary;
@@ -13,6 +14,7 @@ interface DiaryFormProps {
 }
 
 const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
+  const { toast } = useToast();
   const { user } = useUser();
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
@@ -41,16 +43,18 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
 
   const weatherOptions = [
     { label: "sunny", src: "/weather/sunny.png" },
-    { label: "cloudy", src: "/weather/cloud.png" },
-    { label: "rainy", src: "/weather/rain.png" },
-    { label: "snowy", src: "/weather/snow.png" },
-    { label: "windy", src: "/weather/wind.png" }
+    { label: "cloudy", src: "/weather/cloudy.png" },
+    { label: "rainy", src: "/weather/rainy.png" },
+    { label: "snowy", src: "/weather/snowy.png" },
+    { label: "windy", src: "/weather/windy.png" }
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      alert("로그인이 필요합니다.");
+      toast({
+        description: "로그인이 필요합니다."
+      });
       return;
     }
 
@@ -65,10 +69,14 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
     try {
       if (isEdit && initialData?.id) {
         await updateDiary(initialData.id, diaryData);
-        alert("일기가 수정되었습니다.");
+        toast({
+          description: "일기가 수정되었습니다."
+        });
       } else {
         await createDiary(diaryData);
-        alert("일기가 저장되었습니다.");
+        toast({
+          description: "일기 저장 완료!"
+        });
       }
       router.push("/diary");
     } catch (error) {
