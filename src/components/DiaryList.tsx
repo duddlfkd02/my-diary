@@ -4,6 +4,7 @@ import { Diary } from "@/types/diary";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import IconSelector from "./IconSelector";
+import { cn } from "@/lib/utils";
 
 const DiaryList = () => {
   const { user } = useUser();
@@ -28,37 +29,59 @@ const DiaryList = () => {
   }, [user, selectedMood, sortOrder]);
 
   return (
-    <div className="p-4">
-      <div className="flex gap-2">
+    <div className="px-4 py-6">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <button
           onClick={() => {
             setSelectedMood(null);
             setSortOrder("newest");
           }}
-          className={selectedMood === null ? "font-bold" : ""}
+          className={cn(
+            "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
+            selectedMood === null ? "bg-ivoryLight font-semibold text-blue" : "border-blue"
+          )}
         >
           전체
         </button>
-        <button onClick={() => setSortOrder("newest")} className={sortOrder === "newest" ? "font-bold" : ""}>
+        <button
+          onClick={() => setSortOrder("newest")}
+          className={cn(
+            "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
+            sortOrder === "newest" ? "bg-ivoryLight font-semibold text-blue" : "border-gray-300"
+          )}
+        >
           최신순
         </button>
-        <button onClick={() => setSortOrder("oldest")} className={sortOrder === "oldest" ? "font-bold" : ""}>
+        <button
+          onClick={() => setSortOrder("oldest")}
+          className={cn(
+            "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
+            sortOrder === "oldest" ? "bg-ivoryLight font-semibold text-blue" : "border-gray-300"
+          )}
+        >
           오래된순
         </button>
         <IconSelector title="기분별" value={selectedMood || ""} setValue={setSelectedMood} options={moodOptions} />
       </div>
+
       {diaries.length > 0 ? (
-        diaries.map((diary) => (
-          <div
-            key={diary.id}
-            className="mb-2 cursor-pointer rounded-lg border p-4 hover:bg-gray-50"
-            onClick={() => router.push(`/diary/${diary.id}`)}
-          >
-            <p className="text-sm text-gray-700">
-              {diary.content.length > 50 ? diary.content.slice(0, 50) + "..." : diary.content}
-            </p>
-          </div>
-        ))
+        <div className="flex flex-col gap-4">
+          {diaries.map((diary) => (
+            <div
+              key={diary.id}
+              onClick={() => router.push(`/diary/${diary.id}`)}
+              className="cursor-pointer rounded-xl bg-white p-4 shadow-md transition hover:shadow-lg dark:bg-muted"
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-xs text-gray-500">{diary.date}</p>
+                {diary.mood && <img src={`/mood/${diary.mood}.png`} alt={diary.mood} className="h-5 w-5" />}
+              </div>
+              <p className="text-sm text-darkText dark:text-gray-200">
+                {diary.content.length > 60 ? `${diary.content.slice(0, 60)}...` : diary.content}
+              </p>
+            </div>
+          ))}
+        </div>
       ) : (
         <p>작성된 일기가 없습니다.</p>
       )}
