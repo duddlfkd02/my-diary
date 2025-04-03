@@ -1,3 +1,5 @@
+"use client";
+
 import useUser from "@/hooks/useUser";
 import { getDiaries } from "@/libs/diaryApi";
 import { Diary } from "@/types/diary";
@@ -5,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import IconSelector from "./IconSelector";
 import { cn } from "@/lib/utils";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 const DiaryList = () => {
   const { user } = useUser();
@@ -29,8 +33,8 @@ const DiaryList = () => {
   }, [user, selectedMood, sortOrder]);
 
   return (
-    <div className="px-4 py-6">
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+    <div className="px-4 py-8">
+      <div className="mb-4 flex justify-center gap-2">
         <button
           onClick={() => {
             setSelectedMood(null);
@@ -47,7 +51,7 @@ const DiaryList = () => {
           onClick={() => setSortOrder("newest")}
           className={cn(
             "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
-            sortOrder === "newest" ? "bg-ivoryLight font-semibold text-blue" : "border-gray-300"
+            selectedMood === null ? "bg-ivoryLight font-semibold text-blue" : "border-blue"
           )}
         >
           최신순
@@ -56,34 +60,37 @@ const DiaryList = () => {
           onClick={() => setSortOrder("oldest")}
           className={cn(
             "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
-            sortOrder === "oldest" ? "bg-ivoryLight font-semibold text-blue" : "border-gray-300"
+            selectedMood === null ? "bg-ivoryLight font-semibold text-blue" : "border-blue"
           )}
         >
           오래된순
         </button>
-        <IconSelector title="기분별" value={selectedMood || ""} setValue={setSelectedMood} options={moodOptions} />
+      </div>
+
+      <div className="mb-4 flex justify-center gap-2">
+        <IconSelector value={selectedMood || ""} setValue={setSelectedMood} options={moodOptions} />
       </div>
 
       {diaries.length > 0 ? (
-        <div className="flex flex-col gap-4">
+        <Swiper spaceBetween={10} slidesPerView={1.5} centeredSlides={true} className="w-full max-w-md">
           {diaries.map((diary) => (
-            <div
-              key={diary.id}
-              onClick={() => router.push(`/diary/${diary.id}`)}
-              className="cursor-pointer rounded-xl bg-white p-4 shadow-md transition hover:shadow-lg dark:bg-muted"
-            >
-              <div className="mb-2 flex items-center justify-between">
-                <p className="text-xs text-gray-500">{diary.date}</p>
-                {diary.mood && <img src={`/mood/${diary.mood}.png`} alt={diary.mood} className="h-5 w-5" />}
+            <SwiperSlide key={diary.id}>
+              <div
+                className="flex h-[360px] cursor-pointer flex-col justify-between rounded-xl bg-ivory p-6 shadow-md"
+                onClick={() => router.push(`/diary/${diary.id}`)}
+              >
+                <div className="flex-grow break-words text-sm text-darkText">{diary.content}</div>
+
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  {diary.date}
+                  {diary.mood && <img src={`/mood/${diary.mood}.png`} alt={diary.mood} className="h-8 w-8 self-end" />}
+                </div>
               </div>
-              <p className="text-sm text-darkText dark:text-gray-200">
-                {diary.content.length > 60 ? `${diary.content.slice(0, 60)}...` : diary.content}
-              </p>
-            </div>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       ) : (
-        <p>작성된 일기가 없습니다.</p>
+        <p className="text-center text-gray-500">작성된 일기가 없습니다.</p>
       )}
     </div>
   );
