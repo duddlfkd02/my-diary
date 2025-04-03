@@ -6,7 +6,7 @@ import { Diary } from "@/types/diary";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import IconSelector from "./IconSelector";
-import { cn } from "@/lib/utils";
+import FilterButtons from "./FilterButton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
@@ -34,38 +34,12 @@ const DiaryList = () => {
 
   return (
     <div className="px-4 py-8">
-      <div className="mb-4 flex justify-center gap-2">
-        <button
-          onClick={() => {
-            setSelectedMood(null);
-            setSortOrder("newest");
-          }}
-          className={cn(
-            "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
-            selectedMood === null ? "bg-ivoryLight font-semibold text-blue" : "border-blue"
-          )}
-        >
-          전체
-        </button>
-        <button
-          onClick={() => setSortOrder("newest")}
-          className={cn(
-            "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
-            selectedMood === null ? "bg-ivoryLight font-semibold text-blue" : "border-blue"
-          )}
-        >
-          최신순
-        </button>
-        <button
-          onClick={() => setSortOrder("oldest")}
-          className={cn(
-            "rounded-full border px-4 py-1 text-sm text-ivoryLight transition",
-            selectedMood === null ? "bg-ivoryLight font-semibold text-blue" : "border-blue"
-          )}
-        >
-          오래된순
-        </button>
-      </div>
+      <FilterButtons
+        selectedMood={selectedMood}
+        sortOrder={sortOrder}
+        setSelectedMood={setSelectedMood}
+        setSortOrder={setSortOrder}
+      />
 
       <div className="mb-4 flex justify-center gap-2">
         <IconSelector value={selectedMood || ""} setValue={setSelectedMood} options={moodOptions} />
