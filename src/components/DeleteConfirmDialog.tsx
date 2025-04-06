@@ -11,17 +11,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import { ReactNode } from "react";
 
 interface DialogProps {
   onConfirm: () => void;
+  children: ReactNode;
 }
 
-const DeleteConfirmDialog = ({ onConfirm }: DialogProps) => {
+const DeleteConfirmDialog = ({ onConfirm, children }: DialogProps) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <button className="text-sm text-red-500 underline">🗑️</button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>정말 삭제할까요?</AlertDialogTitle>

@@ -18,14 +18,10 @@ const IconSelector = ({ title, value, setValue, options }: IconSelectorProps) =>
   return (
     <div>
       <span>{title}</span>
-      <div>
+      <div className="flex gap-2">
         {options.map((option) => (
-          <button
-            key={option.label}
-            onClick={() => setValue(option.label)}
-            className={`h-10 w-10 rounded-full border ${value === option.label ? "ring-blue-500 ring-2" : ""}`}
-          >
-            <Image src={option.src} alt={option.label} width={40} height={40} />
+          <button key={option.label} onClick={() => setValue(option.label)}>
+            <Image src={option.src} alt={option.label} width={32} height={32} />
           </button>
         ))}
       </div>

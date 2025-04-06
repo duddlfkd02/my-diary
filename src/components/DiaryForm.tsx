@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import IconSelector from "./IconSelector";
 import { Diary } from "@/types/diary";
 import { useToast } from "@/hooks/use-toast";
+import { Pencil } from "lucide-react";
+import { Save } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface DiaryFormProps {
   initialData?: Diary;
@@ -85,24 +88,34 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
   };
 
   return (
-    <div>
-      <h2>오늘 있었던 일을 기록해보세요.</h2>
-      <textarea
-        placeholder="오늘 하루를 기록하세요"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      ></textarea>
-      <div className="mt-2 flex gap-2">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+      <div className="mb-4 flex">
+        <h2 className="text-xl font-semibold text-darkText">오늘 있었던 일을 기록해보세요.</h2>
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="rounded border px-4 py-2"
+          className="å rounded border border-none bg-transparent pl-4 text-sm text-darkText"
         />
-        <IconSelector title="mood" value={mood} setValue={setMood} options={moodOptions} />
-        <IconSelector title="weather" value={weather} setValue={setWeather} options={weatherOptions} />
       </div>
-      <button onClick={handleSubmit}>{isEdit ? "수정하기" : "저장하기"}</button>
+
+      <textarea
+        className="m-4 h-64 w-full max-w-sm resize-none rounded-md border p-4 text-sm text-darkText focus:outline-none"
+        placeholder="오늘 하루를 기록하세요..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
+
+      <div className="flex gap-6">
+        <IconSelector value={mood} setValue={setMood} options={moodOptions} />
+        <IconSelector value={weather} setValue={setWeather} options={weatherOptions} />
+      </div>
+
+      <div className="mt-4">
+        <Button size="icon" variant="ghost" onClick={handleSubmit} className="rounded-full hover:bg-[#728FDF]">
+          {isEdit ? <Pencil className="text-ivory" /> : <Save className="text-ivory" />}
+        </Button>
+      </div>
     </div>
   );
 };
