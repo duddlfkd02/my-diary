@@ -4,12 +4,12 @@ import useUser from "@/hooks/useUser";
 import { createDiary, updateDiary } from "@/libs/diaryApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import IconSelector from "./IconSelector";
+import IconSelector from "../IconSelector";
 import { Diary } from "@/types/diary";
 import { useToast } from "@/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { Save } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 interface DiaryFormProps {
   initialData?: Diary;

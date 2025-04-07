@@ -1,5 +1,3 @@
-"use client";
-
 import Auth from "@/components/Auth";
 
 const Home = () => {

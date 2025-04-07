@@ -5,8 +5,8 @@ import { getDiaries } from "@/libs/diaryApi";
 import { Diary } from "@/types/diary";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import IconSelector from "./IconSelector";
-import FilterButtons from "./FilterButton";
+import IconSelector from "../IconSelector";
+import FilterButtons from "../FilterButton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 

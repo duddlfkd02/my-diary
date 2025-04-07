@@ -22,11 +22,7 @@ const ThemeToggle = () => {
     document.documentElement.classList.toggle("dark");
   };
 
-  return (
-    <button onClick={toggleTheme} className="fixed bottom-4 right-4 rounded bg-muted px-4 py-2 text-sm shadow">
-      {isDark ? "🌞" : "🌙"}
-    </button>
-  );
+  return <button onClick={toggleTheme}>{isDark ? "🌞" : "🌙"}</button>;
 };
 
 export default ThemeToggle;
