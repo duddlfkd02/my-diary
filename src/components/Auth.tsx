@@ -2,9 +2,18 @@
 
 import { supabase } from "@/libs/supabase";
 import useUser from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Auth = () => {
   const { user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/diary");
+    }
+  }, [user, router]);
 
   const signInWithGithub = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -23,14 +32,17 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
       {user ? (
-        <button onClick={signOut} className="mt-4 rounded-lg bg-red-500 px-6 py-3 text-white">
-          로그아웃
-        </button>
+        <>
+          <p className="text-center text-lg font-semibold">로그인 성공!</p>
+          <button onClick={signOut} className="rounded-lg bg-red-500 px-6 py-3 text-white">
+            로그아웃
+          </button>
+        </>
       ) : (
         <button onClick={signInWithGithub} className="rounded-lg bg-black px-6 py-3 text-white">
-          github 로그인
+          Github 로그인
         </button>
       )}
     </div>
