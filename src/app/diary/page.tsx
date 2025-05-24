@@ -1,4 +1,5 @@
 "use client";
+import CalendarView from "@/components/diary/CalendarView";
 import DiaryList from "@/components/diary/DiaryList";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,8 @@ const DiaryPage = () => {
         </Button>
         <ThemeToggle />
       </div>
-
-      <DiaryList />
+      <CalendarView />
+      {/* <DiaryList /> */}
     </div>
   );
 };

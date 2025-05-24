@@ -50,3 +50,22 @@ export const deleteDiary = async (id: string): Promise<void> => {
     throw new Error(`다이어리 삭제 실패하였습니다. ${error.message}`);
   }
 };
+
+// 한 달 전체 일기를 가져오는 함수
+export const getDiariesByMonth = async (userId: string, year: number, month: number) => {
+  // const start = new Date(year, month - 1, 1).toISOString();
+  // const end = new Date(year, month, 0, 23, 59, 59).toISOString();
+
+  const start = new Date(year, month, 1).toISOString(); // 해당 월 1일
+  const end = new Date(year, month + 1, 1).toISOString(); // 다음 달 1일
+
+  const { data, error } = await supabase
+    .from("diaries")
+    .select("date, mood")
+    .eq("user_id", userId)
+    .gte("date", start)
+    .lte("date", end);
+
+  if (error) throw new Error(error.message);
+  return data || [];
+};
