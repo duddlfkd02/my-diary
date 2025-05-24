@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="font-kongFont bg-blue">
+      <body className="font-KoddiFont bg-blue">
         {children}
         <Toaster />
       </body>

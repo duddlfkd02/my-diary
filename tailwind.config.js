@@ -5,7 +5,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        kongFont: ["KongFont", "sans-serif"]
+        kongFont: ["KongFont", "sans-serif"],
+        koddiFont: ["KoddiFont", "sans-serif"],
+        koddiFontBold: ["KoddiFontBold", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",

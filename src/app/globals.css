@@ -9,6 +9,18 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "KoddiFont";
+  src: url("/fonts/KoddiUDOnGothic-Regular.woff2") format("woff2");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "KoddiFontBold";
+  src: url("/fonts/KoddiUDOnGothic-Bold.woff2") format("woff2");
+  font-style: normal;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
