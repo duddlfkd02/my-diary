@@ -1,7 +1,9 @@
 "use client";
 
+import { toast } from "@/hooks/use-toast";
 import useUser from "@/hooks/useUser";
-import { getDiariesByMonth } from "@/libs/diaryApi";
+import { getDiariesByMonth, getDiaryByDate } from "@/libs/diaryApi";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -12,14 +14,36 @@ export default function CalendarView() {
   const [viewDate, setViewDate] = useState(new Date());
 
   const { user } = useUser();
+  const router = useRouter();
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("sv-SE"); // YYYY-MM-DD
   };
 
-  const handleChange = (value: Date) => {
+  const handleChange = async (value: Date) => {
+    if (!user) return;
+
+    const selected = formatDate(new Date(value));
+    try {
+      const diary = await getDiaryByDate(user.id, selected);
+
+      if (diary) {
+        router.push(`/diary/${diary.id}`);
+      } else {
+        toast({
+          title: "아직 일기를 작성하지 않았어요."
+        });
+      }
+    } catch (error) {
+      console.log("일기 데이터 조회 실패", error);
+      toast({
+        title: "문제가 발생했어요",
+        description: "잠시 후 다시 시도해 주세요.",
+        variant: "destructive"
+      });
+    }
+
     setSelectedDate(value);
-    console.log("선택한 날짜", formatDate(value));
   };
 
   // 월별 감정 불러오기

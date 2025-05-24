@@ -53,9 +53,6 @@ export const deleteDiary = async (id: string): Promise<void> => {
 
 // 한 달 전체 일기를 가져오는 함수
 export const getDiariesByMonth = async (userId: string, year: number, month: number) => {
-  // const start = new Date(year, month - 1, 1).toISOString();
-  // const end = new Date(year, month, 0, 23, 59, 59).toISOString();
-
   const start = new Date(year, month, 1).toISOString(); // 해당 월 1일
   const end = new Date(year, month + 1, 1).toISOString(); // 다음 달 1일
 
@@ -68,4 +65,19 @@ export const getDiariesByMonth = async (userId: string, year: number, month: num
 
   if (error) throw new Error(error.message);
   return data || [];
+};
+
+// 달력 날짜 클릭 시 해당 일기 불러오기
+export const getDiaryByDate = async (userId: string, date: string) => {
+  const { data, error } = await supabase
+    .from("diaries")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("date", date)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data || null;
 };
