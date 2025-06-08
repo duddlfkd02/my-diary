@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { Save } from "lucide-react";
 import { Button } from "../ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface DiaryFormProps {
   initialData?: Diary;
@@ -52,6 +53,31 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
     { label: "windy", src: "/weather/windy.png" }
   ];
 
+  const queryClient = useQueryClient();
+
+  const { mutate: saveDiary, isPending } = useMutation({
+    mutationFn: async (diaryData: any) => {
+      if (isEdit && initialData?.id) {
+        return await updateDiary(initialData.id, diaryData);
+      } else {
+        return await createDiary(diaryData);
+      }
+    },
+    onSuccess: () => {
+      toast({
+        description: isEdit ? "일기가 수정되었습니다." : "일기 저장 완료!"
+      });
+      queryClient.invalidateQueries({ queryKey: ["diaries"] });
+      router.push("/diary");
+    },
+    onError: (error) => {
+      console.error("일기 저장 오류 발생", error);
+      toast({
+        description: "일기 저장 중 오류가 발생했습니다."
+      });
+    }
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -69,22 +95,7 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
       ...(date ? { date } : {})
     };
 
-    try {
-      if (isEdit && initialData?.id) {
-        await updateDiary(initialData.id, diaryData);
-        toast({
-          description: "일기가 수정되었습니다."
-        });
-      } else {
-        await createDiary(diaryData);
-        toast({
-          description: "일기 저장 완료!"
-        });
-      }
-      router.push("/diary");
-    } catch (error) {
-      console.error("일기 저장 오류 발생", error);
-    }
+    saveDiary(diaryData);
   };
 
   return (
@@ -112,8 +123,14 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
       </div>
 
       <div className="mt-4">
-        <Button size="icon" variant="ghost" onClick={handleSubmit} className="rounded-full hover:bg-[#728FDF]">
-          {isEdit ? <Pencil className="text-ivory" /> : <Save className="text-ivory" />}
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={handleSubmit}
+          disabled={isPending}
+          className="rounded-full hover:bg-[#728FDF]"
+        >
+          <Save className="text-ivory" />
         </Button>
       </div>
     </div>

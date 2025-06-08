@@ -3,14 +3,14 @@
 import { toast } from "@/hooks/use-toast";
 import useUser from "@/hooks/useUser";
 import { getDiariesByMonth, getDiaryByDate } from "@/libs/diaryApi";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 export default function CalendarView() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [diaryMap, setDiaryMap] = useState<Record<string, string>>({});
   const [viewDate, setViewDate] = useState(new Date());
 
   const { user } = useUser();
@@ -47,24 +47,23 @@ export default function CalendarView() {
   };
 
   // 월별 감정 불러오기
-  useEffect(() => {
-    if (!user) return;
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
 
-    const fetchMonthlyDiaries = async () => {
-      const year = viewDate.getFullYear();
-      const month = viewDate.getMonth();
+  const { data: diaries = [], isLoading } = useQuery({
+    queryKey: ["monthly-diaries", user?.id, year, month],
+    queryFn: () => getDiariesByMonth(user!.id, year, month),
+    enabled: !!user // user가 있을 때만 실행
+  });
 
-      const data = await getDiariesByMonth(user.id, year, month);
-      const mapped: Record<string, string> = {};
-      data.forEach((entry) => {
-        mapped[formatDate(new Date(entry.date))] = entry.mood;
-      });
-
-      setDiaryMap(mapped);
-    };
-
-    fetchMonthlyDiaries();
-  }, [user, viewDate]);
+  // 감정데이터 map형태로
+  const diaryMap = useMemo(() => {
+    const mapped: Record<string, string> = {};
+    diaries?.forEach((entry) => {
+      mapped[formatDate(new Date(entry.date))] = entry.mood;
+    });
+    return mapped;
+  }, [diaries]);
 
   return (
     <div className="flex flex-col items-center">

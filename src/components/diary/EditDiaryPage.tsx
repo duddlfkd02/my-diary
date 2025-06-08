@@ -2,31 +2,24 @@
 
 import DiaryForm from "@/components/diary/DiaryForm";
 import { getDiaryById } from "@/libs/diaryApi";
-import { Diary } from "@/types/diary";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const EditDiaryPage = () => {
   const { id } = useParams() as { id: string };
-  const [initialData, setInitialData] = useState<Diary | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchDiary = async () => {
-      try {
-        const data = await getDiaryById(id);
-        setInitialData(data);
-      } catch (error) {
-        console.error("다이어리 불러오기 실패", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) fetchDiary();
-  }, [id]);
+  const {
+    data: initialData,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ["diary", id],
+    queryFn: () => getDiaryById(id),
+    enabled: !!id
+  });
 
-  if (loading) return <p className="mt-8 text-center">일기 데이터를 불러오고 있어요</p>;
-  if (!initialData) return <p className="mt-8 text-center">일기를 찾을 수 없어요</p>;
+  if (isLoading) return <p className="mt-8 text-center">일기 데이터를 불러오고 있어요</p>;
+  if (isError || !initialData) return <p className="mt-8 text-center">일기를 찾을 수 없어요</p>;
 
   return (
     <div className="flex min-h-screen flex-col items-center p-4">

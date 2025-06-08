@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
+import ReactQueryProvider from "@/components/provider/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Diary App",
@@ -15,8 +16,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="font-KoddiFont bg-blue">
-        {children}
-        <Toaster />
+        <ReactQueryProvider>
+          {children}
+
+          <Toaster />
+        </ReactQueryProvider>
       </body>
     </html>
   );

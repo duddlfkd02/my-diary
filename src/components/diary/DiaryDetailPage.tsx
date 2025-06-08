@@ -1,58 +1,53 @@
 "use client";
 
 import { getDiaryById } from "@/libs/diaryApi";
-import { Diary } from "@/types/diary";
 import { deleteDiary } from "@/libs/diaryApi";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import useUser from "@/hooks/useUser";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const DiaryDetailPage = () => {
   const { toast } = useToast();
   const { user } = useUser();
   const { id } = useParams() as { id: string };
   const router = useRouter();
-  const [diary, setDiary] = useState<Diary | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchDiary = async () => {
-      try {
-        const data = await getDiaryById(id);
-        setDiary(data);
-      } catch (error) {
-        console.error("일기 불러오기를 실패했습니다.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDiary();
-  }, [id]);
+  const queryClient = useQueryClient();
 
-  if (loading) return <p className="mt-8 text-center">일기 데이터를 불러오고 있어요</p>;
-  if (!diary) return <p className="mt-8 text-center">일기를 찾을 수 없어요</p>;
+  const { data: diary, isLoading } = useQuery({
+    queryKey: ["diary", id],
+    queryFn: () => getDiaryById(id),
+    enabled: !!id
+  });
 
-  const handleDelete = async () => {
-    if (!user || !diary?.id) return;
-
-    try {
-      await deleteDiary(diary.id);
+  const { mutate: deleteDiaryMutate, isPending } = useMutation({
+    mutationFn: deleteDiary,
+    onSuccess: () => {
       toast({
         description: "일기가 삭제되었습니다."
       });
+      queryClient.invalidateQueries({ queryKey: ["diaries"] });
       router.push("/diary");
-    } catch (error) {
-      console.error("삭제 실패", error);
+    },
+    onError: () => {
       toast({
         description: "문제가 발생했어요. 다시 시도해주세요."
       });
     }
+  });
+
+  const handleDelete = async () => {
+    if (!user || !diary?.id) return;
+    deleteDiaryMutate(diary.id);
   };
+
+  if (isLoading) return <p className="mt-8 text-center">일기 데이터를 불러오고 있어요</p>;
+  if (!diary) return <p className="mt-8 text-center">일기를 찾을 수 없어요</p>;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -76,7 +71,7 @@ const DiaryDetailPage = () => {
         </div>
       </div>
       {/* 수정 / 삭제 아이콘 */}
-      <div className="mt-4">
+      <div className="mt-4 flex w-full max-w-sm justify-end gap-2">
         <Button
           size="icon"
           variant="ghost"

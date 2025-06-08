@@ -2,18 +2,17 @@
 
 import useUser from "@/hooks/useUser";
 import { getDiaries } from "@/libs/diaryApi";
-import { Diary } from "@/types/diary";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import IconSelector from "../IconSelector";
 import FilterButtons from "../FilterButton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { useQuery } from "@tanstack/react-query";
 
 const DiaryList = () => {
   const { user } = useUser();
   const router = useRouter();
-  const [diaries, setDiaries] = useState<Diary[]>([]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
@@ -24,13 +23,11 @@ const DiaryList = () => {
     { label: "tired", src: "/mood/tired.png" }
   ];
 
-  useEffect(() => {
-    if (user) {
-      getDiaries(user.id, selectedMood || undefined, sortOrder)
-        .then((data) => setDiaries(data))
-        .catch((error) => console.error("다이어리 목록 불러오기 실패:", error));
-    }
-  }, [user, selectedMood, sortOrder]);
+  const { data: diaries = [], isLoading } = useQuery({
+    queryKey: ["all-diaries", user?.id],
+    queryFn: () => getDiaries(user!.id),
+    enabled: !!user // user가 있을 때만 실행
+  });
 
   return (
     <div className="px-4 py-8">
