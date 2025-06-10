@@ -81,3 +81,18 @@ export const getDiaryByDate = async (userId: string, date: string) => {
   if (error) throw new Error(error.message);
   return data || null;
 };
+
+// 감정별 통계 API
+export const getMoodStats = async (userId: string, year: number, month: number) => {
+  const start = new Date(year, month - 1, 1).toISOString().slice(0, 10); // yyyy-mm-dd
+  const end = new Date(year, month, 1).toISOString().slice(0, 10);
+
+  const { data, error } = await supabase.rpc("get_mood_stats", {
+    uid: userId,
+    start_date: start,
+    end_date: end
+  });
+
+  if (error) throw new Error(`감정 통계 불러오기 실패: ${error.message}`);
+  return data;
+};
