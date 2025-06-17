@@ -3,13 +3,6 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "KongFont";
-  src: url("/fonts/KongFont.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
   font-family: "KoddiFont";
   src: url("/fonts/KoddiUDOnGothic-Regular.woff2") format("woff2");
   font-style: normal;
@@ -131,4 +124,61 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* react-calendar css */
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  background: white;
+  font-family: "KoddiFontBold" !important;
+}
+
+.react-calendar__tile--now {
+  background-color: #809deb !important;
+  color: white !important;
+  border-radius: 20px;
+}
+
+.react-calendar__navigation {
+  border-bottom: 4px;
+  height: 90px;
+
+  span {
+    color: #1e1a19 !important;
+  }
+}
+
+.react-calendar__navigation button:disabled {
+  background-color: #ebf1ff !important;
+  border-radius: 20px;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #ebf1ff !important;
+  border-radius: 20px;
+}
+
+.react-calendar__navigation,
+.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__next2-button {
+  display: none;
+}
+
+.react-calendar__tile {
+  text-align: center;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus,
+.react-calendar__tile--active {
+  background-color: #ebf1ff !important;
+  color: #1e1a19 !important;
+  border-radius: 20px;
 }
