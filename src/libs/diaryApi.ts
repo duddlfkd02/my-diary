@@ -96,3 +96,34 @@ export const getMoodStats = async (userId: string, year: number, month: number) 
   if (error) throw new Error(`감정 통계 불러오기 실패: ${error.message}`);
   return data;
 };
+
+// 감정 개수 가져오기
+export const getDiaryStats = async (userId: string) => {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const today = new Date().toISOString();
+
+  // 전체 일기 수
+  const { count: totalCount, error: totalError } = await supabase
+    .from("diaries")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  // 이번 달 작성한 일기 수
+  const { count: monthlyCount, error: monthlyError } = await supabase
+    .from("diaries")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("date", startOfMonth)
+    .lte("date", today);
+
+  if (totalError || monthlyError) {
+    throw new Error("일기 통계 조회 실패");
+  }
+
+  return {
+    total: totalCount || 0,
+    monthly: monthlyCount || 0,
+    streak: 0 // 추후 연속 작성일 수 계산 로직을 추가해도 ㄱㅊ
+  };
+};

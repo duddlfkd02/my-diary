@@ -2,7 +2,7 @@
 
 import { toast } from "@/hooks/use-toast";
 import useUser from "@/hooks/useUser";
-import { getDiariesByMonth, getDiaryByDate } from "@/libs/diaryApi";
+import { getDiariesByMonth, getDiaryByDate, getDiaryStats } from "@/libs/diaryApi";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -65,6 +65,12 @@ export default function CalendarView() {
     return mapped;
   }, [diaries]);
 
+  const { data: stats = { total: 0, monthly: 0, streak: 0 } } = useQuery({
+    queryKey: ["diary-stats", user?.id],
+    queryFn: () => getDiaryStats(user!.id),
+    enabled: !!user
+  });
+
   return (
     <div className="flex flex-col items-center">
       <Calendar
@@ -84,6 +90,22 @@ export default function CalendarView() {
           return mood ? <img src={`/mood/${mood}.png`} alt={mood} className="mx-auto mt-1 h-4 w-4" /> : null;
         }}
       />
+      <div className="mt-4 w-full max-w-sm rounded-lg bg-gray-50 p-4 text-center shadow">
+        <div className="flex justify-around text-sm font-medium text-gray-700">
+          <div>
+            <p className="text-blue-500 text-xl font-bold">{stats.total}</p>
+            <p>총 일기</p>
+          </div>
+          <div>
+            <p className="text-xl font-bold text-indigo-500">{stats.monthly}</p>
+            <p>이번 달</p>
+          </div>
+          <div>
+            <p className="text-xl font-bold text-red-400">{stats.streak}</p>
+            <p>연속 일기</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

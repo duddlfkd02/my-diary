@@ -8,7 +8,9 @@ import Link from "next/link";
 
 const DiaryPage = () => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+      <CalendarView />
+
       <div className="flex w-full max-w-md items-center justify-center gap-7">
         <Button
           asChild
@@ -29,10 +31,8 @@ const DiaryPage = () => {
           </Link>
         </Button>
 
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </div>
-      <CalendarView />
-      {/* <DiaryList /> */}
     </div>
   );
 };
