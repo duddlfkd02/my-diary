@@ -72,14 +72,14 @@ export default function CalendarView() {
   });
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="mx-auto flex max-w-[350px] flex-col">
       <Calendar
         locale="ko"
         onClickDay={handleChange}
         value={selectedDate}
         calendarType="gregory"
         formatDay={(locale, date) => date.getDate().toString()}
-        className="rounded-lg border p-2 shadow-md"
+        className="w-full rounded-lg border shadow-md"
         onActiveStartDateChange={({ activeStartDate }) => {
           if (activeStartDate) setViewDate(activeStartDate);
         }}
@@ -90,7 +90,7 @@ export default function CalendarView() {
           return mood ? <img src={`/mood/${mood}.png`} alt={mood} className="mx-auto mt-1 h-4 w-4" /> : null;
         }}
       />
-      <div className="mt-4 w-full max-w-sm rounded-lg bg-gray-50 p-4 text-center shadow">
+      <div className="mt-4 rounded-lg bg-blueLight p-4 text-center shadow">
         <div className="flex justify-around text-sm font-medium text-gray-700">
           <div>
             <p className="text-blue-500 text-xl font-bold">{stats.total}</p>

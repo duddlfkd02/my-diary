@@ -130,7 +130,9 @@
 .react-calendar {
   width: 350px;
   max-width: 100%;
-  background: white;
+  background: #fffcf7 !important;
+  border: none !important;
+  box-shadow: none !important;
   font-family: "KoddiFontBold" !important;
 }
 

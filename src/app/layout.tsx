@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="font-KoddiFont bg-blue">
+      <body className="font-KoddiFon">
         <ReactQueryProvider>
           {children}
 
