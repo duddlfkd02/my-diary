@@ -20,7 +20,11 @@ const IconSelector = ({ title, value, setValue, options }: IconSelectorProps) =>
       <span>{title}</span>
       <div className="flex gap-2">
         {options.map((option) => (
-          <button key={option.label} onClick={() => setValue(option.label)}>
+          <button
+            key={option.label}
+            onClick={() => setValue(option.label)}
+            className="rounded-full border border-gray-200 p-2 transition hover:bg-blueLight"
+          >
             <Image src={option.src} alt={option.label} width={32} height={32} />
           </button>
         ))}

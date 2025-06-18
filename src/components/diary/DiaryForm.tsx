@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import IconSelector from "../IconSelector";
 import { Diary } from "@/types/diary";
 import { useToast } from "@/hooks/use-toast";
-import { Pencil } from "lucide-react";
-import { Save } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "../ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -99,41 +98,56 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="mb-4 flex">
-        <h2 className="text-xl font-semibold text-darkText">오늘 있었던 일을 기록해보세요.</h2>
+    <form onSubmit={handleSubmit} className="mx-auto flex min-h-screen w-full max-w-md flex-col items-start gap-6">
+      {/* Header */}
+      <div className="mb-2 flex w-full items-center justify-between bg-blueLight px-4 py-6">
+        <button type="button" onClick={() => router.back()} className="px-2 py-1">
+          <ArrowLeft width={20} height={20} className="hover:text-blue" />
+        </button>
+        <h1 className="text-lg font-bold text-darkText">{isEdit ? "일기 수정" : "새 일기"}</h1>
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="rounded-full bg-blue px-4 py-1 text-sm font-semibold text-white shadow-none hover:bg-[##6b7fb7]"
+        >
+          저장
+        </Button>
+      </div>
+
+      {/* 날짜 입력 */}
+      <div className="w-full">
+        <label className="mb-1 block text-sm font-semibold text-darkText">날짜</label>
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="å rounded border border-none bg-transparent pl-4 text-sm text-darkText"
+          className="w-full rounded-md border px-4 py-2 text-sm text-darkText"
         />
       </div>
 
-      <textarea
-        className="m-4 h-64 w-full max-w-sm resize-none rounded-md border p-4 text-sm text-darkText focus:outline-none"
-        placeholder="오늘 하루를 기록하세요..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-
-      <div className="flex gap-6">
-        <IconSelector value={mood} setValue={setMood} options={moodOptions} />
+      {/* 날씨 선택 */}
+      <div className="w-full">
+        <label className="mb-2 block text-sm font-semibold text-darkText">날씨</label>
         <IconSelector value={weather} setValue={setWeather} options={weatherOptions} />
       </div>
 
-      <div className="mt-4">
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={handleSubmit}
-          disabled={isPending}
-          className="rounded-full hover:bg-[#728FDF]"
-        >
-          <Save className="text-ivory" />
-        </Button>
+      {/* 기분 선택 */}
+      <div className="w-full">
+        <label className="mb-2 block text-sm font-semibold text-darkText">오늘의 기분</label>
+        <IconSelector value={mood} setValue={setMood} options={moodOptions} />
       </div>
-    </div>
+
+      {/* 일기 내용 */}
+      <div className="w-full">
+        <label className="mb-1 block text-sm font-semibold text-darkText">일기 내용</label>
+        <textarea
+          className="h-48 w-full resize-none rounded-md border px-4 py-2 text-sm text-darkText"
+          placeholder="오늘 있었던 일을 기록해보세요"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      </div>
+    </form>
   );
 };
 

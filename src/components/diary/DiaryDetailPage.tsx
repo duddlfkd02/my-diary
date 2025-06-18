@@ -50,7 +50,7 @@ const DiaryDetailPage = () => {
   if (!diary) return <p className="mt-8 text-center">일기를 찾을 수 없어요</p>;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center">
       <div className="mb-6 text-center">
         <h1 className="text-xl font-semibold text-darkText">당신의 마음을 되돌아보세요</h1>
       </div>
