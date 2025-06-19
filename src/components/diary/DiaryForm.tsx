@@ -98,7 +98,11 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto flex min-h-screen w-full max-w-md flex-col items-start gap-6">
+    <form
+      method="post"
+      onSubmit={handleSubmit}
+      className="mx-auto flex min-h-screen w-full max-w-md flex-col items-start gap-6"
+    >
       {/* Header */}
       <div className="mb-2 flex w-full items-center justify-between bg-blueLight px-4 py-6">
         <button type="button" onClick={() => router.back()} className="px-2 py-1">
@@ -128,13 +132,13 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
       {/* 날씨 선택 */}
       <div className="w-full">
         <label className="mb-2 block text-sm font-semibold text-darkText">날씨</label>
-        <IconSelector value={weather} setValue={setWeather} options={weatherOptions} />
+        <IconSelector type="button" value={weather} setValue={setWeather} options={weatherOptions} />
       </div>
 
       {/* 기분 선택 */}
       <div className="w-full">
         <label className="mb-2 block text-sm font-semibold text-darkText">오늘의 기분</label>
-        <IconSelector value={mood} setValue={setMood} options={moodOptions} />
+        <IconSelector type="button" value={mood} setValue={setMood} options={moodOptions} />
       </div>
 
       {/* 일기 내용 */}
