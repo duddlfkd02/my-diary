@@ -11,10 +11,11 @@ interface IconSelectorProps {
   title?: string;
   value: string;
   setValue: (val: string) => void;
+  type?: "button" | "submit" | "reset";
   options: IconOption[];
 }
 
-const IconSelector = ({ title, value, setValue, options }: IconSelectorProps) => {
+const IconSelector = ({ title, value, setValue, options, type }: IconSelectorProps) => {
   return (
     <div>
       <span>{title}</span>
@@ -22,6 +23,7 @@ const IconSelector = ({ title, value, setValue, options }: IconSelectorProps) =>
         {options.map((option) => (
           <button
             key={option.label}
+            type={type || "button"}
             onClick={() => setValue(option.label)}
             className="rounded-full border border-gray-200 p-2 transition hover:bg-blueLight"
           >

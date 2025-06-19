@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import useUser from "@/hooks/useUser";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -61,59 +61,68 @@ const DiaryDetailPage = () => {
 
   const firstSentenceEnd = diary.content.indexOf(".") + 1 || diary.content.length;
   const firstSentence = diary.content.slice(0, firstSentenceEnd).trim();
-  const restContent = diary.content.slice(firstSentenceEnd).trim();
 
   return (
-    <div className="bg-light min-h-screen p-4">
-      <div className="flex items-center justify-between rounded-t-xl bg-[#EFF3FF] px-4 py-3">
+    <div className="min-h-screen p-4">
+      <div className="mb-2 flex w-full items-center justify-between bg-blueLight px-4 py-6">
+        <button type="button" onClick={() => router.back()} className="px-2 py-1">
+          <ArrowLeft width={20} height={20} className="hover:text-blue" />
+        </button>
         <div className="flex-1 text-center font-bold text-darkText">{formattedDate}</div>
       </div>
 
-      <div className="mx-auto mt-4 w-full max-w-sm rounded-xl bg-white p-6 shadow-lg">
-        <div className="mb-6">
-          <div className="mb-2 text-lg font-bold text-darkText">{firstSentence}</div>
-          {restContent && <p className="whitespace-pre-wrap text-gray-500">{restContent}</p>}
-        </div>
-
-        <div className="mb-6 flex justify-between text-sm text-gray-700">
+      <div className="m-6 mx-auto flex w-full max-w-sm justify-between rounded-xl bg-white p-6 text-sm text-gray-700 shadow">
+        <div className="flex items-center gap-4">
+          {diary.mood ? (
+            <div className="flex flex-col">
+              <img src={`/mood/${diary.mood}.png`} alt="mood" className="mb-1 h-6 w-6" />
+            </div>
+          ) : (
+            <span>없음</span>
+          )}
           <div className="flex flex-col items-center">
-            <span className="mb-1 font-semibold">기분</span>
-            {diary.mood ? (
-              <>
-                <img src={`/mood/${diary.mood}.png`} alt="mood" className="mb-1 h-6 w-6" />
-                <span>{diary.mood}</span>
-              </>
-            ) : (
-              <span>없음</span>
-            )}
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="mb-1 font-semibold">날씨</span>
-            {diary.weather ? (
-              <>
-                <img src={`/weather/${diary.weather}.png`} alt="weather" className="mb-1 h-6 w-6" />
-                <span>{diary.weather}</span>
-              </>
-            ) : (
-              <span>없음</span>
-            )}
+            <p>기분</p>
+            <p className="font-bold">{diary.mood}</p>
           </div>
         </div>
+        <div className="flex items-center gap-4">
+          {diary.weather ? (
+            <div className="flex flex-col">
+              <img src={`/weather/${diary.weather}.png`} alt="weather" className="mb-1 h-6 w-6" />
+            </div>
+          ) : (
+            <span>없음</span>
+          )}
+          <div className="flex flex-col items-center">
+            <p>날씨</p>
+            <p className="font-bold">{diary.weather}</p>
+          </div>
+        </div>
+      </div>
 
-        <DeleteConfirmDialog onConfirm={handleDelete}>
-          <Button variant="outline" className="mb-2 flex w-full items-center justify-center gap-2 bg-red-100">
-            <Trash2 />
-            삭제하기
+      <div className="mx-auto mt-4 w-full max-w-sm rounded-xl bg-white p-6 shadow">
+        {/* 일기 본문 */}
+        <div className="mb-10 rounded-md">
+          <div className="text-md mb-2 font-semibold text-darkText">{firstSentence}</div>
+          {diary.content && <p className="min-h-52 whitespace-pre-wrap text-sm text-darkText">{diary.content}</p>}
+        </div>
+
+        {/* 버튼 */}
+        <div className="flex gap-4">
+          <Button
+            className="flex w-full items-center justify-center hover:bg-blue/70"
+            onClick={() => router.push(`/diary/edit/${diary.id}`)}
+          >
+            <Pencil />
+            수정하기
           </Button>
-        </DeleteConfirmDialog>
-        <Button
-          variant="outline"
-          className="flex w-full items-center justify-center gap-2 bg-[#EFF3FF]"
-          onClick={() => router.push(`/diary/edit/${diary.id}`)}
-        >
-          <Pencil />
-          수정하기
-        </Button>
+          <DeleteConfirmDialog onConfirm={handleDelete}>
+            <Button className="mb-2 flex w-full items-center justify-center bg-redAccent hover:bg-redAccent/70">
+              <Trash2 />
+              삭제하기
+            </Button>
+          </DeleteConfirmDialog>
+        </div>
       </div>
     </div>
   );
