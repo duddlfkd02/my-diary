@@ -58,7 +58,7 @@ module.exports = {
         ivory: "#FEFAEE",
         ivoryLight: "#F4F1EC",
         blueLight: "#EBF1FF",
-        blue: "#809DEB",
+        blue: "#98AEFF",
         redAccent: "#E76377",
         darkText: "#1E1A19"
       }
