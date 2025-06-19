@@ -103,27 +103,51 @@ export const getDiaryStats = async (userId: string) => {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   const today = new Date().toISOString();
 
-  // 전체 일기 수
-  const { count: totalCount, error: totalError } = await supabase
+  // 전체 & 월간 카운트
+  const { count: totalCount } = await supabase
     .from("diaries")
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId);
 
-  // 이번 달 작성한 일기 수
-  const { count: monthlyCount, error: monthlyError } = await supabase
+  const { count: monthlyCount } = await supabase
     .from("diaries")
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId)
     .gte("date", startOfMonth)
     .lte("date", today);
 
-  if (totalError || monthlyError) {
-    throw new Error("일기 통계 조회 실패");
+  // streak 계산용: 최근 30일간 일기 날짜만 가져오기
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - 30);
+
+  const { data: streakDiaries } = await supabase
+    .from("diaries")
+    .select("date")
+    .eq("user_id", userId)
+    .gte("date", startDate.toISOString())
+    .lte("date", today)
+    .order("date", { ascending: false });
+
+  // 날짜 문자열 배열 만들기 (yyyy-mm-dd 형식)
+  const writtenDates = new Set((streakDiaries ?? []).map((d) => new Date(d.date).toISOString().slice(0, 10)));
+
+  // streak 계산
+  let streak = 0;
+  let cursor = new Date();
+
+  while (true) {
+    const dateStr = cursor.toISOString().slice(0, 10);
+    if (writtenDates.has(dateStr)) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
   }
 
   return {
     total: totalCount || 0,
     monthly: monthlyCount || 0,
-    streak: 0 // 추후 연속 작성일 수 계산 로직을 추가해도 ㄱㅊ
+    streak
   };
 };
