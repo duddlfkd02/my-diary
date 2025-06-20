@@ -29,7 +29,7 @@ export default function StatisticsPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-6">
+    <div className="flex min-h-screen flex-col p-6">
       <MoodChart data={data ?? []} />
     </div>
   );

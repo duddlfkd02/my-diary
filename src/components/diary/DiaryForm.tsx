@@ -101,7 +101,7 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
     <form
       method="post"
       onSubmit={handleSubmit}
-      className="mx-auto flex min-h-screen w-full max-w-md flex-col items-start gap-6"
+      className="mx-auto flex min-h-screen w-full max-w-md flex-col items-start gap-6 p-6"
     >
       {/* Header */}
       <div className="mb-2 flex w-full items-center justify-between bg-blueLight px-4 py-6">
