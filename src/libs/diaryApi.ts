@@ -134,6 +134,7 @@ export const getDiaryStats = async (userId: string) => {
   // streak 계산
   let streak = 0;
   let cursor = new Date();
+  cursor.setDate(cursor.getDate() - 1); // 하루 전 날 기준으로 연속일 계산
 
   while (true) {
     const dateStr = cursor.toISOString().slice(0, 10);
