@@ -2,25 +2,21 @@
 
 import { supabase } from "@/libs/supabase";
 import useUser from "@/hooks/useUser";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const Auth = () => {
   const { user } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      router.push("/diary");
-    }
-  }, [user, router]);
 
   const signInWithGithub = async () => {
+    const redirectUrl = `${process.env.NEXT_DEV_SITE_URL}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "github"
+      provider: "github",
+      options: {
+        redirectTo: redirectUrl
+      }
     });
+
     if (error) {
-      console.error("github 로그인 실패", error.message);
+      console.error("Github 로그인 실패", error.message);
     }
   };
 
