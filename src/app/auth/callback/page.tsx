@@ -3,6 +3,7 @@
 import { supabase } from "@/libs/supabase";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -21,5 +22,9 @@ export default function AuthCallbackPage() {
     };
   }, []);
 
-  return <p className="mt-20 text-center">로그인 중입니다...</p>;
+  return (
+    <p className="mt-20 text-center">
+      <BeatLoader />
+    </p>
+  );
 }

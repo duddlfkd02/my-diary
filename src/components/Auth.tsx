@@ -7,7 +7,7 @@ const Auth = () => {
   const { user } = useUser();
 
   const signInWithGithub = async () => {
-    const redirectUrl = `${process.env.NEXT_DEV_SITE_URL}/auth/callback`;
+    const redirectUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
