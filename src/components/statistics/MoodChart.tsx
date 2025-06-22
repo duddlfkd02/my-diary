@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import useUser from "@/hooks/useUser";
 
 interface MoodStats {
   mood: string;
@@ -15,6 +16,11 @@ interface MoodChartProps {
 
 export default function MoodChart({ data }: MoodChartProps) {
   const router = useRouter();
+  // const { user } = useUser();
+
+  // if (!user) {
+  //   return <p>차트는 로그인한 사용자만 확인할 수 있어요!</p>;
+  // }
 
   const moodLabelMap: { [key: string]: string } = {
     happy: "행복함",

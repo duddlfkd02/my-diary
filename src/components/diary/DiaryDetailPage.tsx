@@ -6,8 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import useUser from "@/hooks/useUser";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Pencil } from "lucide-react";
-import { Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -19,9 +18,17 @@ const DiaryDetailPage = () => {
 
   const queryClient = useQueryClient();
 
+  const guestUserId = process.env.NEXT_PUBLIC_GUEST_USER_ID;
+
+  if (!user && !guestUserId) {
+    return <p className="mt-8 text-center">유저 정보를 찾을 수 없습니다.</p>;
+  }
+
+  const userId = user ? user.id : guestUserId!;
+
   const { data: diary, isLoading } = useQuery({
     queryKey: ["diary", id],
-    queryFn: () => getDiaryById(id),
+    queryFn: () => getDiaryById(id, userId),
     enabled: !!id
   });
 

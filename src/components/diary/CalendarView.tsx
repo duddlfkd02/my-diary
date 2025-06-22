@@ -14,6 +14,11 @@ export default function CalendarView() {
   const [viewDate, setViewDate] = useState(new Date());
 
   const { user } = useUser();
+  const guestUserId = process.env.NEXT_PUBLIC_GUEST_USER_ID;
+
+  const isGuest = user?.id === guestUserId;
+  const userId = isGuest ? guestUserId : user?.id;
+
   const router = useRouter();
 
   const formatDate = (date: Date) => {
@@ -21,11 +26,11 @@ export default function CalendarView() {
   };
 
   const handleChange = async (value: Date) => {
-    if (!user) return;
+    if (!userId) return;
 
     const selected = formatDate(new Date(value));
     try {
-      const diary = await getDiaryByDate(user.id, selected);
+      const diary = await getDiaryByDate(userId, selected);
 
       if (diary) {
         router.push(`/diary/${diary.id}`);
@@ -51,7 +56,7 @@ export default function CalendarView() {
   const month = viewDate.getMonth();
 
   const { data: diaries = [], isLoading } = useQuery({
-    queryKey: ["monthly-diaries", user?.id, year, month],
+    queryKey: ["monthly-diaries", userId, year, month],
     queryFn: () => getDiariesByMonth(user!.id, year, month),
     enabled: !!user // user가 있을 때만 실행
   });
@@ -66,7 +71,7 @@ export default function CalendarView() {
   }, [diaries]);
 
   const { data: stats = { total: 0, monthly: 0, streak: 0 } } = useQuery({
-    queryKey: ["diary-stats", user?.id],
+    queryKey: ["diary-stats", userId],
     queryFn: () => getDiaryStats(user!.id),
     enabled: !!user
   });

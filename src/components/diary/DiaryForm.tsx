@@ -79,15 +79,10 @@ const DiaryForm = ({ initialData, isEdit = false }: DiaryFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast({
-        description: "로그인이 필요합니다."
-      });
-      return;
-    }
+    const guestUserId = process.env.NEXT_PUBLIC_GUEST_USER_ID;
 
     const diaryData = {
-      user_id: user.id,
+      user_id: user ? user.id : guestUserId,
       content,
       mood,
       weather,

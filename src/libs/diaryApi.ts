@@ -25,8 +25,8 @@ export const getDiaries = async (
   return data || [];
 };
 
-export const getDiaryById = async (id: string): Promise<Diary | null> => {
-  const { data, error } = await supabase.from("diaries").select("*").eq("id", id).single();
+export const getDiaryById = async (id: string, userId: string): Promise<Diary | null> => {
+  const { data, error } = await supabase.from("diaries").select("*").eq("id", id).eq("user_id", userId).single();
 
   if (error) {
     console.error("다이어리 조회 실패", error.message);
