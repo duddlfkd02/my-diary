@@ -1,26 +1,50 @@
 import Link from "next/link";
-import { ChartColumnBig, House, PencilLine } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { ChartColumnBig, PencilLine, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { supabase } from "@/libs/supabase";
 
 export default function MenuBar() {
-  const pathname = usePathname();
+  const router = useRouter();
 
-  const isActive = (path: string) => pathname === path;
+  const MenuItem = ({
+    href,
+    label,
+    Icon
+  }: {
+    href: string;
+    label: string;
+    Icon: React.ComponentType<{ className?: string }>;
+  }) => {
+    const pathname = usePathname();
+    const isActive = pathname === href;
 
-  const iconStyle = (active: boolean) => (active ? "text-blue" : "text-gray-300");
+    return (
+      <Link href={href} className="group flex flex-col items-center justify-center text-xs">
+        <Icon className={`transition ${isActive ? "text-blue" : "text-gray-300"} group-hover:text-blue`} />
+        {label}
+      </Link>
+    );
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    alert("로그아웃 되었습니다. 로그인 페이지로 넘어갑니다.");
+
+    router.push("/");
+    if (error) {
+      console.log("로그아웃 실패", error.message);
+    }
+  };
 
   return (
     <div className="flex min-h-20 w-full items-center justify-evenly rounded-lg bg-gray-50 text-center">
-      <Link href="/diary" className="text-xs">
-        <House className={`${iconStyle(isActive("/diary"))}`} />홈
-      </Link>
+      <button onClick={signOut} className="flex flex-col items-center justify-center text-xs">
+        <LogOut className="text-gray-300 transition hover:text-blue" />
+        로그아웃
+      </button>
 
-      <Link href="/diary/statistics" className="text-xs">
-        <ChartColumnBig className={`${iconStyle(isActive("/diary/statistics"))}`} /> 차트
-      </Link>
-      <Link href="/diary/write" className="text-xs">
-        <PencilLine className={`${iconStyle(isActive("/diary/write"))}`} /> 작성
-      </Link>
+      <MenuItem href="/diary/statistics" label="차트" Icon={ChartColumnBig} />
+      <MenuItem href="/diary/write" label="작성" Icon={PencilLine} />
     </div>
   );
 }
