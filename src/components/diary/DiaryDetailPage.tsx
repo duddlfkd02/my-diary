@@ -7,7 +7,7 @@ import useUser from "@/hooks/useUser";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
+import DeleteConfirmDialog from "@/components/modal/DeleteConfirmDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const DiaryDetailPage = () => {

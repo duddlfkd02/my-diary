@@ -3,6 +3,7 @@
 import { supabase } from "@/libs/supabase";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
+import GuestLoginDialog from "./modal/GuestLoginDialog";
 
 const Auth = () => {
   const { user } = useUser();
@@ -46,7 +47,6 @@ const Auth = () => {
       return;
     }
 
-    alert("비회원 로그인으로 접속합니다.");
     router.push("/diary");
   };
 
@@ -80,14 +80,11 @@ const Auth = () => {
         <div className="relative my-2 flex items-center justify-center">
           <hr className="w-full border-gray-300" />
         </div>
-
-        <button
-          onClick={handleGuestLogin}
-          className="rounded-lg border border-red-200 px-4 py-3 font-semibold text-redAccent transition hover:bg-redAccent/10"
-        >
-          비회원 이용
-        </button>
-
+        <GuestLoginDialog onConfirm={handleGuestLogin}>
+          <button className="rounded-lg border border-red-200 px-4 py-3 font-semibold text-redAccent transition hover:bg-redAccent/10">
+            비회원 이용
+          </button>
+        </GuestLoginDialog>
         <p className="mt-1 text-center text-xs text-gray-500">* 비회원 체험 시 일부 기능이 제한될 수 있습니다.</p>
       </div>
     </div>
