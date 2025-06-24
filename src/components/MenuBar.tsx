@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChartColumnBig, PencilLine, LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/libs/supabase";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function MenuBar() {
   const router = useRouter();
@@ -26,8 +27,13 @@ export default function MenuBar() {
     );
   };
 
+  const queryClient = useQueryClient();
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
+
+    queryClient.clear();
+
     alert("로그아웃 되었습니다. 로그인 페이지로 넘어갑니다.");
 
     router.push("/");

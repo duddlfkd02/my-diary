@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import DeleteConfirmDialog from "@/components/modal/DeleteConfirmDialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const DiaryDetailPage = () => {
   const { toast } = useToast();
@@ -24,13 +25,25 @@ const DiaryDetailPage = () => {
     return <p className="mt-8 text-center">유저 정보를 찾을 수 없습니다.</p>;
   }
 
-  const userId = user ? user.id : guestUserId!;
+  const isGuest = !user || user.email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
+  const userId = isGuest ? process.env.NEXT_PUBLIC_GUEST_USER_ID! : user?.id;
 
-  const { data: diary, isLoading } = useQuery({
-    queryKey: ["diary", id],
+  const {
+    data: diary,
+    isLoading,
+    refetch
+  } = useQuery({
+    queryKey: ["diary", id, userId],
     queryFn: () => getDiaryById(id, userId),
-    enabled: !!id
+    enabled: !!id && !!userId
   });
+
+  useEffect(() => {
+    if (id && userId) {
+      queryClient.invalidateQueries({ queryKey: ["diary", id, userId] });
+      refetch();
+    }
+  }, [id, userId, queryClient, refetch]);
 
   const { mutate: deleteDiaryMutate, isPending } = useMutation({
     mutationFn: deleteDiary,
@@ -53,6 +66,7 @@ const DiaryDetailPage = () => {
     deleteDiaryMutate(diary.id);
   };
 
+  if (!userId) return <p className="mt-8 text-center">유저 정보를 불러오고 있어요...</p>;
   if (isLoading) return <p className="mt-8 text-center">일기 데이터를 불러오고 있어요</p>;
   if (!diary) return <p className="mt-8 text-center">일기를 찾을 수 없어요</p>;
 
